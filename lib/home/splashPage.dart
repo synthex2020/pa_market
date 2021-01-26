@@ -46,7 +46,7 @@ class Welcome extends StatefulWidget {
 
 class _WelcomeState extends State<Welcome> {
   
-  final splashDelay = 5;
+  final splashDelay = 3;
   
   _loadWidget() async {
     var _duration = Duration(seconds: splashDelay);

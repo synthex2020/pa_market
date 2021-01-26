@@ -18,7 +18,7 @@ class Orders extends StatefulWidget {
 class _OrdersState extends State<Orders> {
   String productUrl = "https://morningchores.com/wp-content/uploads/2018/05/Growing-Pumpkins-Your-Guide-to-Plant-Grow-and-Harvest-Pumpkins-FB.jpg";
   String dropDown = "2kg";
-  String name= "tomotoe";
+  String name= "tomato";
   int price = 50;
   @override
   Widget build(BuildContext context) {

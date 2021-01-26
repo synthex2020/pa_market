@@ -27,13 +27,22 @@ class _NavigationBarState extends State<NavigationBar> {
       if(index == 0) {
         //go to farms home
         Navigator.push(context, MaterialPageRoute(builder: (context)=> Home()));
+        // Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
+        // Navigator.pushReplacementNamed(context, '/home');
         print("zero");
       }else if (index == 1){
         //go to their social about pages
         Navigator.push(context, MaterialPageRoute(builder: (context)=> Browser()));
+        // Navigator.pushNamedAndRemoveUntil(context, '/browser', (_) => false);
+        // Navigator.pushReplacementNamed(context, '/browser');
+
       }else{
         //its the user account
         Navigator.push(context, MaterialPageRoute(builder: (context)=> AccountSettings()));
+        // Navigator.pushNamedAndRemoveUntil(context, '/accountSettings', (_) => false);
+        // Navigator.pushReplacementNamed(context, '/accountSettings');
+
+
       }
     });
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pa_market/account/previousOrders.dart';
 import 'package:pa_market/account/settings.dart';
 import 'package:pa_market/shared/navBar.dart';
+
 class AccountSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

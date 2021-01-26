@@ -14,10 +14,29 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  List list = new List();
+  List list = [];
   String city  , description , logo , name , owner,email ,produce,
       phone,province,street,streetNumber, farmDocId;
+  String searchInput;
+  final _key = GlobalKey<FormState>();
 
+  List obtainSearchResults (String search) {
+    List results = [];
+    results.clear();
+    //runs a linear search for the results
+    list.forEach((element) {
+      String name = element.name;
+      if (name !=null) {
+        if (name.contains(searchInput)){
+          results.add(element);
+        }//end if statement
+      }else{
+        print(name);
+      }
+    });
+    print(results.length);
+    return results;
+  }//end search results
   getData () async {
     Firebase.initializeApp();
     return await FirebaseFirestore.instance.collection('farms').get();
@@ -64,7 +83,7 @@ class _HomeState extends State<Home> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Form(
-                key: GlobalKey<FormState>(),
+                key: _key,
                 child: Container(
                   width: MediaQuery.of(context).size.width/2,
                   child: TextFormField(
@@ -72,12 +91,22 @@ class _HomeState extends State<Home> {
                     decoration: InputDecoration(
                         hintText: "Search"
                     ),
+                    onChanged: (value) {
+                      setState(() {
+                        searchInput = value;
+                      });
+                    },
                   ),
                 ),
               ),
               FlatButton(
                   onPressed: () {
                     //go to a search results page
+                    Navigator.pushNamed(
+                      context, 
+                      '/searchResults',
+                      arguments: obtainSearchResults(searchInput)
+                    );
                   },
                   child: Icon(Icons.search)
               ),
@@ -113,58 +142,63 @@ class _HomeState extends State<Home> {
               builder: (context , snapshot) {
                 //check if the connection has been established
                 if(snapshot.connectionState == ConnectionState.done){
-                  if(snapshot.hasData){
-                    QuerySnapshot querySnapshot = snapshot.data;
-                    List<DocumentSnapshot> documents = querySnapshot.docs;
-                    documents.forEach((element) {
-                      element.data().forEach((key, value) {
-                        if(key == 'city'){
-                          city = value;
-                        }else if(key == 'description'){
-                          description = value;
-                        }else if(key == 'email'){
-                          email = value;
-                        }else if(key == 'logo'){
-                          logo = value;
-                        }else if(key == 'name'){
-                          name = value;
-                        }else if(key == 'owner'){
-                          owner = value;
-                        }else if (key == 'phone'){
-                          phone = value.toString();
-                        }else if(key == 'produce'){
-                          produce = value;
-                        }else if (key == 'province'){
-                          province = value;
-                        }else if (key == 'street'){
-                          street = value;
+                  return StreamBuilder(
+                      builder: (context , snapshot) {
+                        if(snapshot.hasData){
+                          QuerySnapshot querySnapshot = snapshot.data;
+                          List<DocumentSnapshot> documents = querySnapshot.docs;
+                          documents.forEach((element) {
+                            element.data().forEach((key, value) {
+                              if(key == 'city'){
+                                city = value;
+                              }else if(key == 'description'){
+                                description = value;
+                              }else if(key == 'email'){
+                                email = value;
+                              }else if(key == 'logo'){
+                                logo = value;
+                              }else if(key == 'name'){
+                                name = value;
+                              }else if(key == 'owner'){
+                                owner = value;
+                              }else if (key == 'phone'){
+                                phone = value.toString();
+                              }else if(key == 'produce'){
+                                produce = value;
+                              }else if (key == 'province'){
+                                province = value;
+                              }else if (key == 'street'){
+                                street = value;
+                              }else{
+                                streetNumber = value;
+                                farmDocId = element.id;
+                                print(farmDocId);
+                              }
+                            });
+                            //we add to the list here
+                            list.add(
+                                Farm(city: city, description: description, logo: logo, name: name, owner: owner,
+                                    phone: phone, produce: produce, province: province,street: street, streetNumber: streetNumber, farmDocId: farmDocId
+                                )
+                            );
+                          });
+                          return Container(
+                            child: ListView.builder(
+                              itemCount: list.length,
+                              itemBuilder: (context , index) {
+                                return farmCard(list[index].name, list[index].description, list[index].logo,list[index]);
+                              },
+                            ),
+                            height: MediaQuery.of(context).size.height,
+                          );
                         }else{
-                          streetNumber = value;
-                          farmDocId = element.id;
-                          print(farmDocId);
+                          return Center(
+                            child: Text("Error 404 not found"),
+                          );
                         }
-                      });
-                      //we add to the list here
-                      list.add(
-                          Farm(city: city, description: description, logo: logo, name: name, owner: owner,
-                              phone: phone, produce: produce, province: province,street: street, streetNumber: streetNumber, farmDocId: farmDocId
-                          )
-                      );
-                    });
-                    return Container(
-                      child: ListView.builder(
-                        itemCount: list.length,
-                        itemBuilder: (context , index) {
-                          return farmCard(list[index].name, list[index].description, list[index].logo,list[index]);
-                        },
-                      ),
-                      height: MediaQuery.of(context).size.height,
-                    );
-                  }else{
-                    return Center(
-                      child: Text("Error 404 not found"),
-                    );
-                  }
+                      },
+                    stream: FirebaseFirestore.instance.collection('farms').snapshots(),
+                  );
                 }else{
                   return Center(
                     child: CircularProgressIndicator(),
