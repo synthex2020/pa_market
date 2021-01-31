@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pa_market/aboutFarms/browser.dart';
+import 'package:pa_market/aboutFarms/farmDisplay.dart';
 import 'package:pa_market/account/accountSettings.dart';
 import 'package:pa_market/home/home.dart';
 import 'package:pa_market/home/searchResults.dart';
@@ -38,7 +39,8 @@ class MyApp extends StatelessWidget {
         '/order':(context) => Orders(),
         '/searchResults': (context)=> SearchResults(),
         '/accountSettings':(context)=> AccountSettings(),
-        'browser':(context)=>Browser()
+        'browser':(context)=>Browser(),
+        '/farmdisplay':(context)=>FarmDisplay()
       },
     );
   }
